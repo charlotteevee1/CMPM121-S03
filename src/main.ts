@@ -4,15 +4,21 @@
 
 const app = document.querySelector<HTMLElement>("#app")!;
 
+let cupsOfCoffee = 0;
+
 const heading = document.createElement("h1");
 heading.textContent = "D1 project";
 
-const message = document.createElement("p");
-message.textContent = "Click to brew a coffee";
+const numCoffeeDisplay = document.createElement("p");
+numCoffeeDisplay.textContent = "Coffees: " + cupsOfCoffee;
 
 const brewButton = document.createElement("button");
 brewButton.textContent = "Brew Coffee";
 
-brewButton.addEventListener("click", () => console.log("Brewing Coffee"));
+brewButton.addEventListener("click", () => {
+  cupsOfCoffee++;
+  numCoffeeDisplay.textContent = "Coffees: " + `${cupsOfCoffee}`;
+  console.log(cupsOfCoffee);
+});
 
-app.append(heading, message, brewButton);
+app.append(heading, numCoffeeDisplay, brewButton);
