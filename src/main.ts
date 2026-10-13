@@ -78,8 +78,7 @@ function updateDisplay() {
   baristaButton.disabled = cupsOfCoffee < getBaristaCost();
 
   numCoffeeDisplay.textContent = `Coffees: ${Math.floor(cupsOfCoffee)}`;
-  numBaristasDisplay.textContent =
-    `Baristas (${BARISTA_CUPS_PER_SECOND} coffee/sec): ${baristas}`;
+  numBaristasDisplay.textContent = `Baristas: ${baristas}`;
 
   const nextPrice = Math.ceil(
     BARISTA_BASE_COST * BARISTA_COST_MULTIPLIER ** (baristas + 1),
@@ -87,7 +86,7 @@ function updateDisplay() {
   const percentIncrease = Math.round((BARISTA_COST_MULTIPLIER - 1) * 100);
 
   baristaInfoDisplay.textContent =
-    `Price: ${getBaristaCost()} coffees (next one: ${nextPrice}, ` +
+    `Price of Barista: ${getBaristaCost()} coffees (next one: ${nextPrice}, ` +
     `+${percentIncrease}% each hire)`;
   productionDisplay.textContent = `Total: ${
     getCoffeePerSecond().toFixed(1)
