@@ -1,0 +1,34 @@
+img {
+  image-rendering: pixelated; /* keeps pixel art crisp */
+}
+
+body {
+  background: #caa682;
+  color: #5a3a1e;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+}
+
+.title-image {
+  max-width: 100%;
+  height: auto;
+}
+
+#brew-button {
+  width: 160px;
+  height: 160px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+#brew-button img {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#brew-button:active {
+  transform: scale(0.92);
+}

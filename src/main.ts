@@ -2,6 +2,11 @@
 // even this tiny example demonstrates a separately deployed asset.
 // @deno-types="./asset-url.d.ts"
 
+// @deno-types="./asset-url.d.ts"
+import titleUrl from "./assets/cafe_clicker_title.png?no-inline";
+// @deno-types="./asset-url.d.ts"
+import coffeeCupUrl from "./assets/coffeecup.png?no-inline";
+
 const app = document.querySelector<HTMLElement>("#app")!;
 
 const BARISTA_CUPS_PER_SECOND = 1;
@@ -47,19 +52,29 @@ function onFrame(currentTimestamp: number) {
 }
 
 const heading = document.createElement("h1");
-heading.textContent = "Coffee Clicker";
+const titleImage = document.createElement("img");
+titleImage.src = titleUrl;
+titleImage.alt = "Cafe Clicker";
+titleImage.className = "title-image";
+heading.append(titleImage);
 
 const numCoffeeDisplay = document.createElement("p");
+const baristaInfoDisplay = document.createElement("p");
+const productionDisplay = document.createElement("p");
 const numBaristasDisplay = document.createElement("p");
 
 const brewButton = document.createElement("button");
-brewButton.textContent = "Brew Coffee";
+brewButton.id = "brew-button";
+brewButton.setAttribute("aria-label", "Brew coffee");
+
+const cupImage = document.createElement("img");
+cupImage.src = coffeeCupUrl;
+cupImage.alt = "";
+cupImage.draggable = false;
+brewButton.append(cupImage);
 
 const baristaButton = document.createElement("button");
 baristaButton.textContent = "Hire Barista";
-
-const baristaInfoDisplay = document.createElement("p");
-const productionDisplay = document.createElement("p");
 
 brewButton.addEventListener("click", () => {
   cupsOfCoffee++;
