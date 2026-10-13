@@ -12,9 +12,13 @@ const app = document.querySelector<HTMLElement>("#app")!;
 const BARISTA_CUPS_PER_SECOND = .65;
 const BARISTA_BASE_COST = 10;
 const BARISTA_COST_MULTIPLIER = 1.25;
+const betterBaseCost = 20;
+const betterCostMult = 2;
 
 let cupsOfCoffee = 0;
+let cupsPerClick = 1;
 let baristas = 0;
+let coffeeMachines = 0;
 
 let previousTimestamp = 0; //time of the last frame
 let firstFrame = true; //true until we have seen one frame
@@ -27,6 +31,10 @@ function getBaristaCost(): number {
   return Math.ceil(
     BARISTA_BASE_COST * BARISTA_COST_MULTIPLIER ** baristas,
   );
+}
+
+function getMachineCost(): number {
+  return Math.ceil(betterBaseCost * betterCostMult ** coffeeMachines);
 }
 
 function growCoffee(secondsPassed: number) {
@@ -62,6 +70,8 @@ const numCoffeeDisplay = document.createElement("p");
 const baristaInfoDisplay = document.createElement("p");
 const productionDisplay = document.createElement("p");
 const numBaristasDisplay = document.createElement("p");
+const numPerClick = document.createElement("p");
+const machinesInfoDisplay = document.createElement("p");
 
 const brewButton = document.createElement("button");
 brewButton.id = "brew-button";
@@ -76,8 +86,11 @@ brewButton.append(cupImage);
 const baristaButton = document.createElement("button");
 baristaButton.textContent = "Hire Barista";
 
+const coffeeMachineButton = document.createElement("button");
+coffeeMachineButton.textContent = "Get coffee machine";
+
 brewButton.addEventListener("click", () => {
-  cupsOfCoffee++;
+  cupsOfCoffee += cupsPerClick;
   updateDisplay();
 });
 
@@ -89,9 +102,20 @@ baristaButton.addEventListener("click", () => {
   updateDisplay();
 });
 
+coffeeMachineButton.addEventListener("click", () => {
+  const cost = getMachineCost();
+  if (cupsOfCoffee < cost) return;
+  cupsOfCoffee -= cost;
+  coffeeMachines++;
+  cupsPerClick++;
+  updateDisplay();
+});
+
 function updateDisplay() {
   baristaButton.disabled = cupsOfCoffee < getBaristaCost();
+  coffeeMachineButton.disabled = cupsOfCoffee < getMachineCost();
 
+  numPerClick.textContent = `Coffees per click ${Math.floor(cupsPerClick)}`;
   numCoffeeDisplay.textContent = `Coffees: ${Math.floor(cupsOfCoffee)}`;
   numBaristasDisplay.textContent = `Baristas: ${baristas}`;
 
@@ -100,16 +124,21 @@ function updateDisplay() {
   productionDisplay.textContent = `Total: ${
     getCoffeePerSecond().toFixed(1)
   } coffees/sec`;
+  machinesInfoDisplay.textContent =
+    `Price of coffee machine: ${getMachineCost()} coffees`;
 }
 
 app.append(
   heading,
   numCoffeeDisplay,
   numBaristasDisplay,
+  numPerClick,
   brewButton,
   baristaButton,
+  coffeeMachineButton,
   productionDisplay,
   baristaInfoDisplay,
+  machinesInfoDisplay,
 );
 
 updateDisplay();
