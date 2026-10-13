@@ -7,7 +7,7 @@ const app = document.querySelector<HTMLElement>("#app")!;
 const BARISTA_CUPS_PER_SECOND = 1;
 
 let cupsOfCoffee = 0;
-let baristas = 1;
+const baristas = 1;
 
 setInterval(() => {
   cupsOfCoffee += baristas * BARISTA_CUPS_PER_SECOND;
