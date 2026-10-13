@@ -10,13 +10,13 @@ body {
 }
 
 .title-image {
-  max-width: 100%;
+  max-width: 75%;
   height: auto;
 }
 
 #brew-button {
-  width: 160px;
-  height: 160px;
+  width: 135px;
+  height: 135px;
   padding: 0;
   background: transparent;
   border: none;

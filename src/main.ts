@@ -9,7 +9,7 @@ import coffeeCupUrl from "./assets/coffeecup.png?no-inline";
 
 const app = document.querySelector<HTMLElement>("#app")!;
 
-const BARISTA_CUPS_PER_SECOND = 1;
+const BARISTA_CUPS_PER_SECOND = .65;
 const BARISTA_BASE_COST = 10;
 const BARISTA_COST_MULTIPLIER = 1.25;
 
@@ -95,14 +95,8 @@ function updateDisplay() {
   numCoffeeDisplay.textContent = `Coffees: ${Math.floor(cupsOfCoffee)}`;
   numBaristasDisplay.textContent = `Baristas: ${baristas}`;
 
-  const nextPrice = Math.ceil(
-    BARISTA_BASE_COST * BARISTA_COST_MULTIPLIER ** (baristas + 1),
-  );
-  const percentIncrease = Math.round((BARISTA_COST_MULTIPLIER - 1) * 100);
-
   baristaInfoDisplay.textContent =
-    `Price of Barista: ${getBaristaCost()} coffees (next one: ${nextPrice}, ` +
-    `+${percentIncrease}% each hire)`;
+    `Price of Barista: ${getBaristaCost()} coffees`;
   productionDisplay.textContent = `Total: ${
     getCoffeePerSecond().toFixed(1)
   } coffees/sec`;
