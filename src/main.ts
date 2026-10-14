@@ -24,7 +24,7 @@ let previousTimestamp = 0; //time of the last frame
 let firstFrame = true; //true until we have seen one frame
 
 function getCoffeePerSecond(): number {
-  return baristas * BARISTA_CUPS_PER_SECOND;
+  return baristas * BARISTA_CUPS_PER_SECOND + getUpgradeCoffeePerSecond();
 }
 
 function getBaristaCost(): number {
@@ -111,6 +111,75 @@ coffeeMachineButton.addEventListener("click", () => {
   updateDisplay();
 });
 
+//these upgrades are going to be handled by the same cost, purchase
+//and display code. the new upgrades should be added to this i think
+//instead of coping the barista/machine stuff that we have going on up there
+//because they all have their own constants, cost function, and click listener
+
+const upgrades = [
+  {
+    name: "Pastry case",
+    description: "Customers stay longer and order more",
+    baseCost: 50,
+    costMultiplier: 1.3,
+    coffeePerSecond: 2,
+    coffeePerClick: 0,
+    owned: 0,
+  },
+  {
+    name: "Espresso blend",
+    description: "Premium beans make every click stronger",
+    baseCost: 100,
+    costMultiplier: 1.5,
+    coffeePerSecond: 0,
+    coffeePerClick: 3,
+    owned: 0,
+  },
+];
+
+//the cost of upgrade number "index"
+function getUpgradeCost(index: number): number {
+  const upgrade = upgrades[index];
+  return Math.ceil(upgrade.baseCost * upgrade.costMultiplier ** upgrade.owned);
+}
+
+//adds the coffee per second from all the upgrades in the list
+function getUpgradeCoffeePerSecond(): number {
+  let total = 0;
+  for (let i = 0; i < upgrades.length; i++) {
+    const upgrade = upgrades[i];
+    total += upgrade.owned * upgrade.coffeePerSecond;
+  }
+  return total;
+}
+
+//buying stuff also just works the same way for all the upgrades in the list
+function buyUpgrade(index: number) {
+  const upgrade = upgrades[index];
+  const cost = getUpgradeCost(index);
+  if (cupsOfCoffee < cost) return; //too broke :p
+  cupsOfCoffee -= cost;
+  upgrade.owned++;
+  cupsPerClick += upgrade.coffeePerClick;
+  updateDisplay();
+}
+
+//button a little info like for each
+const upgradeButtons: HTMLButtonElement[] = [];
+const upgradeInfoDisplays: HTMLParagraphElement[] = [];
+
+for (let i = 0; i < upgrades.length; i++) {
+  const button = document.createElement("button");
+  button.addEventListener("click", () => {
+    buyUpgrade(i);
+  });
+
+  const info = document.createElement("p");
+
+  upgradeButtons.push(button);
+  upgradeInfoDisplays.push(info);
+}
+
 function updateDisplay() {
   baristaButton.disabled = cupsOfCoffee < getBaristaCost();
   coffeeMachineButton.disabled = cupsOfCoffee < getMachineCost();
@@ -126,6 +195,16 @@ function updateDisplay() {
   } coffees/sec`;
   machinesInfoDisplay.textContent =
     `Price of coffee machine: ${getMachineCost()} coffees`;
+
+  for (let i = 0; i < upgrades.length; i++) {
+    const upgrade = upgrades[i];
+    const cost = getUpgradeCost(i);
+
+    upgradeButtons[i].textContent = `Buy ${upgrade.name} (${cost} coffees)`;
+    upgradeButtons[i].disabled = cupsOfCoffee < cost;
+    upgradeInfoDisplays[i].textContent =
+      `${upgrade.name} owned: ${upgrade.owned}. ${upgrade.description}`;
+  }
 }
 
 app.append(
@@ -140,6 +219,10 @@ app.append(
   baristaInfoDisplay,
   machinesInfoDisplay,
 );
+
+for (let i = 0; i < upgrades.length; i++) {
+  app.append(upgradeButtons[i], upgradeInfoDisplays[i]);
+}
 
 updateDisplay();
 requestAnimationFrame(onFrame);
