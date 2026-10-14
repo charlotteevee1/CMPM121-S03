@@ -9,32 +9,17 @@ import coffeeCupUrl from "./assets/coffeecup.png?no-inline";
 
 const app = document.querySelector<HTMLElement>("#app")!;
 
-const BARISTA_CUPS_PER_SECOND = .65;
-const BARISTA_BASE_COST = 10;
-const BARISTA_COST_MULTIPLIER = 1.25;
-const betterBaseCost = 20;
-const betterCostMult = 2;
+const BARISTA_CUPS_PER_SECOND = 1;
 
 let cupsOfCoffee = 0;
 let cupsPerClick = 1;
-let baristas = 0;
-let coffeeMachines = 0;
+const baristas = 0;
 
 let previousTimestamp = 0; //time of the last frame
 let firstFrame = true; //true until we have seen one frame
 
 function getCoffeePerSecond(): number {
   return baristas * BARISTA_CUPS_PER_SECOND + getUpgradeCoffeePerSecond();
-}
-
-function getBaristaCost(): number {
-  return Math.ceil(
-    BARISTA_BASE_COST * BARISTA_COST_MULTIPLIER ** baristas,
-  );
-}
-
-function getMachineCost(): number {
-  return Math.ceil(betterBaseCost * betterCostMult ** coffeeMachines);
 }
 
 function growCoffee(secondsPassed: number) {
@@ -67,11 +52,8 @@ titleImage.className = "title-image";
 heading.append(titleImage);
 
 const numCoffeeDisplay = document.createElement("p");
-const baristaInfoDisplay = document.createElement("p");
 const productionDisplay = document.createElement("p");
-const numBaristasDisplay = document.createElement("p");
 const numPerClick = document.createElement("p");
-const machinesInfoDisplay = document.createElement("p");
 
 const brewButton = document.createElement("button");
 brewButton.id = "brew-button";
@@ -83,31 +65,8 @@ cupImage.alt = "";
 cupImage.draggable = false;
 brewButton.append(cupImage);
 
-const baristaButton = document.createElement("button");
-baristaButton.textContent = "Hire Barista";
-
-const coffeeMachineButton = document.createElement("button");
-coffeeMachineButton.textContent = "Get coffee machine";
-
 brewButton.addEventListener("click", () => {
   cupsOfCoffee += cupsPerClick;
-  updateDisplay();
-});
-
-baristaButton.addEventListener("click", () => {
-  const cost = getBaristaCost();
-  if (cupsOfCoffee < cost) return; //they cant afford it
-  cupsOfCoffee -= cost;
-  baristas++;
-  updateDisplay();
-});
-
-coffeeMachineButton.addEventListener("click", () => {
-  const cost = getMachineCost();
-  if (cupsOfCoffee < cost) return;
-  cupsOfCoffee -= cost;
-  coffeeMachines++;
-  cupsPerClick++;
   updateDisplay();
 });
 
@@ -117,6 +76,24 @@ coffeeMachineButton.addEventListener("click", () => {
 //because they all have their own constants, cost function, and click listener
 
 const upgrades = [
+  {
+    name: "Barista",
+    description: "Makes coffee for you",
+    baseCost: 10,
+    costMultiplier: 1.25,
+    coffeePerSecond: 1,
+    coffeePerClick: 0,
+    owned: 0,
+  },
+  {
+    name: "Coffee Machine",
+    description: "Machines make every click stronger",
+    baseCost: 30,
+    costMultiplier: 1.3,
+    coffeePerSecond: 0,
+    coffeePerClick: 1,
+    owned: 0,
+  },
   {
     name: "Pastry case",
     description: "Customers stay longer and order more",
@@ -181,20 +158,12 @@ for (let i = 0; i < upgrades.length; i++) {
 }
 
 function updateDisplay() {
-  baristaButton.disabled = cupsOfCoffee < getBaristaCost();
-  coffeeMachineButton.disabled = cupsOfCoffee < getMachineCost();
-
   numPerClick.textContent = `Coffees per click ${Math.floor(cupsPerClick)}`;
   numCoffeeDisplay.textContent = `Coffees: ${Math.floor(cupsOfCoffee)}`;
-  numBaristasDisplay.textContent = `Baristas: ${baristas}`;
 
-  baristaInfoDisplay.textContent =
-    `Price of Barista: ${getBaristaCost()} coffees`;
   productionDisplay.textContent = `Total: ${
     getCoffeePerSecond().toFixed(1)
   } coffees/sec`;
-  machinesInfoDisplay.textContent =
-    `Price of coffee machine: ${getMachineCost()} coffees`;
 
   for (let i = 0; i < upgrades.length; i++) {
     const upgrade = upgrades[i];
@@ -210,14 +179,9 @@ function updateDisplay() {
 app.append(
   heading,
   numCoffeeDisplay,
-  numBaristasDisplay,
   numPerClick,
   brewButton,
-  baristaButton,
-  coffeeMachineButton,
   productionDisplay,
-  baristaInfoDisplay,
-  machinesInfoDisplay,
 );
 
 for (let i = 0; i < upgrades.length; i++) {
