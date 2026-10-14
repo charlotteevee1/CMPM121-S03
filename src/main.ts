@@ -2,24 +2,19 @@
 // even this tiny example demonstrates a separately deployed asset.
 // @deno-types="./asset-url.d.ts"
 
-// @deno-types="./asset-url.d.ts"
 import titleUrl from "./assets/cafe_clicker_title.png?no-inline";
-// @deno-types="./asset-url.d.ts"
 import coffeeCupUrl from "./assets/coffeecup.png?no-inline";
 
 const app = document.querySelector<HTMLElement>("#app")!;
 
-const BARISTA_CUPS_PER_SECOND = 1;
-
 let cupsOfCoffee = 0;
 let cupsPerClick = 1;
-const baristas = 0;
 
 let previousTimestamp = 0; //time of the last frame
 let firstFrame = true; //true until we have seen one frame
 
 function getCoffeePerSecond(): number {
-  return baristas * BARISTA_CUPS_PER_SECOND + getUpgradeCoffeePerSecond();
+  return getUpgradeCoffeePerSecond();
 }
 
 function growCoffee(secondsPassed: number) {
@@ -29,7 +24,7 @@ function growCoffee(secondsPassed: number) {
 
 function onFrame(currentTimestamp: number) {
   if (firstFrame) {
-    //theres no earlier fram to compare it with so just record the time
+    //theres no earlier frame to compare it with so just record the time
     previousTimestamp = currentTimestamp;
     firstFrame = false;
   } else {
@@ -70,11 +65,6 @@ brewButton.addEventListener("click", () => {
   updateDisplay();
 });
 
-//these upgrades are going to be handled by the same cost, purchase
-//and display code. the new upgrades should be added to this i think
-//instead of coping the barista/machine stuff that we have going on up there
-//because they all have their own constants, cost function, and click listener
-
 const upgrades = [
   {
     name: "Barista",
@@ -110,6 +100,15 @@ const upgrades = [
     costMultiplier: 1.5,
     coffeePerSecond: 0,
     coffeePerClick: 3,
+    owned: 0,
+  },
+  {
+    name: "Advertisements",
+    description: "Hand out flyers to bring in a constant stream of customers",
+    baseCost: 500,
+    costMultiplier: 1.5,
+    coffeePerSecond: 5,
+    coffeePerClick: 0,
     owned: 0,
   },
 ];
